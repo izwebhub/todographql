@@ -14,12 +14,17 @@ import graphql.kickstart.tools.GraphQLQueryResolver;
 @Component
 public class CategoryQuery implements GraphQLQueryResolver, CategoryQueryContract {
 
-	@Autowired
-	private CategoryService categoryService;
+    @Autowired
+    private CategoryService categoryService;
 
-	@Override
-	public List<Category> getCategories() {
-		return categoryService.getCategories();
-	}
+    @Override
+    public List<Category> getCategories() {
+        return categoryService.getCategories();
+    }
+
+    @Override
+    public Category getCategory(Long id) {
+        return categoryService.getCategory(id);
+    }
 
 }

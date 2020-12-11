@@ -6,4 +6,6 @@ import com.izwebacademy.todographql.models.Category;
 
 public interface CategoryQueryContract {
 	List<Category> getCategories();
+	
+	Category getCategory(Long id);
 }
