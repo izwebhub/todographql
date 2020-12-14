@@ -1,3 +1,31 @@
 type Todo {
 	id: ID!
+	title: String
+    description: String
+    startDate: String
+    endDate: String
+    completedDate: String
+    status: TodoStatus
+    category: Category
+    createdBy: User
+    completed: Boolean
+    active: Boolean
+    createdAt: String
+    updatedAt: String
+}
+
+input TodoInput {
+    userId: ID! # We will remove this when we implement AUTH System, we will use the current logging user!
+}
+
+extend type Query {
+    getAllTodos: [Todo]
+    # getMyTodos: [Todo] will implement this after AUTH System
+    getUserTodos(userId: ID!): [Todo]
+    getTodo(id: ID!): Todo
+}
+
+extend type Mutation  {
+    createTodo(input: TodoInput!): Todo
+
 }

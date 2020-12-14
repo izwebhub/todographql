@@ -58,6 +58,8 @@ public class Todo extends BaseEntity {
 	@JoinColumn(name = "user_id")
 	private User createdBy;
 
+	private Boolean completed = false;
+
 	public Long getId() {
 		return id;
 	}
@@ -130,4 +132,11 @@ public class Todo extends BaseEntity {
 		this.createdBy = createdBy;
 	}
 
+	public Boolean getCompleted() {
+		return completed;
+	}
+
+	public void setCompleted(Boolean completed) {
+		this.completed = completed;
+	}
 }
