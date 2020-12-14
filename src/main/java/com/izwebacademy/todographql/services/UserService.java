@@ -5,6 +5,8 @@ import com.izwebacademy.todographql.contracts.mutations.TodoMutationContract;
 import com.izwebacademy.todographql.contracts.mutations.UserMutationContract;
 import com.izwebacademy.todographql.inputs.TodoInput;
 import com.izwebacademy.todographql.inputs.UserInput;
+import com.izwebacademy.todographql.inputs.UserPermissionInput;
+import com.izwebacademy.todographql.models.Permission;
 import com.izwebacademy.todographql.models.Todo;
 import com.izwebacademy.todographql.models.User;
 import com.izwebacademy.todographql.repositories.UserRepository;
@@ -13,6 +15,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -41,6 +44,11 @@ public class UserService implements UserMutationContract {
         user.setPassword(getPassword(input));
 
         return userRepository.save(user);
+    }
+
+    @Override
+    public List<Permission> assignPermissions(UserPermissionInput input) {
+        return null;
     }
 
     private String getPassword(UserInput input) {

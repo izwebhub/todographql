@@ -18,6 +18,13 @@ input UserInput {
 	confirmPassword: String!
 }
 
+
+input UserPermissionInput {
+	userId: ID!
+	permissionIds: [ID!]!
+}
+
 extend type Mutation {
 	createUser(input: UserInput): User
+	assignPermissions(input: UserPermissionInput!): [Permission]
 }

@@ -1,3 +1,18 @@
 type Permission {
 	id: ID!
+	name: String!
+	description: String
+	active: Boolean
+	createdAt: String
+	updatedAt: String
 }
+
+# We dont need mutations (create or edit) for Permissions because are system generated, so only system can manage them!!
+# Remember we are going to implement our own Spring Security not that used for REST .
+# We only need to show them only
+
+#extend type Query {
+#	getAllPermissions: [Permission]
+#	getPermission(id: ID!): Permission
+#	getUserPermission(userId: ID!): [Permission]
+#}
