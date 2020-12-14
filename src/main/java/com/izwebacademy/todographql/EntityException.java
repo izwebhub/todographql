@@ -10,9 +10,10 @@ import java.util.Map;
 
 public class EntityException extends RuntimeException implements GraphQLError {
 
-    private String invalidField;
+    // We can print variable name or value
+    private Object invalidField;
 
-    public EntityException(String message, String invalidField) {
+    public EntityException(String message, Object invalidField) {
         super(message);
         this.invalidField = invalidField;
     }

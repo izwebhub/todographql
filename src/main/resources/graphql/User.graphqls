@@ -10,6 +10,10 @@ type User {
 	updatedAt: String
 }
 
+type TokenResponse {
+	token: String!
+}
+
 input UserInput {
 	email: String
 	fullName: String
@@ -24,7 +28,13 @@ input UserPermissionInput {
 	permissionIds: [ID!]!
 }
 
+input AuthInput {
+	username: String!
+	password: String!
+}
+
 extend type Mutation {
 	createUser(input: UserInput): User
+	authUser(input: AuthInput!): TokenResponse
 	assignPermissions(input: UserPermissionInput!): [Permission]
 }

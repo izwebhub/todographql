@@ -11,8 +11,8 @@ type Permission {
 # Remember we are going to implement our own Spring Security not that used for REST .
 # We only need to show them only
 
-#extend type Query {
-#	getAllPermissions: [Permission]
-#	getPermission(id: ID!): Permission
-#	getUserPermission(userId: ID!): [Permission]
-#}
+extend type Query {
+	getAllPermissions: [Permission]
+	getPermission(id: ID!): Permission
+	getUserPermission(userId: ID!): [Permission]
+}
