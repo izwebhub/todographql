@@ -15,7 +15,12 @@ type Todo {
 }
 
 input TodoInput {
-    userId: ID! # We will remove this when we implement AUTH System, we will use the current logging user!
+    userId: ID! # same as createdBy # We will remove this when we implement AUTH System, we will use the current logging user!
+    title: String!
+    description: String
+    startDate: String!
+    endDate: String!
+    categoryId: ID!
 }
 
 extend type Query {

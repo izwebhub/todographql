@@ -19,4 +19,14 @@ public class TodoQuery implements GraphQLQueryResolver, TodoQueryContract {
     public List<Todo> getAllTodos() {
         return todoService.getAllTodos();
     }
+
+    @Override
+    public List<Todo> getUserTodos(Long userId) {
+        return todoService.getUserTodos(userId);
+    }
+
+    @Override
+    public Todo getTodo(Long id) {
+        return todoService.getTodo(id);
+    }
 }

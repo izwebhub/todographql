@@ -1,5 +1,6 @@
 package com.izwebacademy.todographql.models;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import javax.persistence.Column;
@@ -36,15 +37,15 @@ public class Todo extends BaseEntity {
 
 	@Convert(converter = LocalDateAttributeConverter.class)
 	@Column(name = "start_date")
-	private LocalDateTime startDate;
+	private LocalDate startDate;
 
 	@Convert(converter = LocalDateAttributeConverter.class)
 	@Column(name = "end_date")
-	private LocalDateTime endDate;
+	private LocalDate endDate;
 
 	@Convert(converter = LocalDateAttributeConverter.class)
 	@Column(name = "completed_date")
-	private LocalDateTime completedDate;
+	private LocalDate completedDate;
 
 	@Column(name = "status")
 	@Enumerated(EnumType.STRING)
@@ -59,6 +60,18 @@ public class Todo extends BaseEntity {
 	private User createdBy;
 
 	private Boolean completed = false;
+
+	public Todo() {
+	}
+
+	public Todo(String title, String description, LocalDate startDate, LocalDate endDate, Category category, User createdBy) {
+		this.title = title;
+		this.description = description;
+		this.startDate = startDate;
+		this.endDate = endDate;
+		this.category = category;
+		this.createdBy = createdBy;
+	}
 
 	public Long getId() {
 		return id;
@@ -84,27 +97,27 @@ public class Todo extends BaseEntity {
 		this.description = description;
 	}
 
-	public LocalDateTime getStartDate() {
+	public LocalDate getStartDate() {
 		return startDate;
 	}
 
-	public void setStartDate(LocalDateTime startDate) {
+	public void setStartDate(LocalDate startDate) {
 		this.startDate = startDate;
 	}
 
-	public LocalDateTime getEndDate() {
+	public LocalDate getEndDate() {
 		return endDate;
 	}
 
-	public void setEndDate(LocalDateTime endDate) {
+	public void setEndDate(LocalDate endDate) {
 		this.endDate = endDate;
 	}
 
-	public LocalDateTime getCompletedDate() {
+	public LocalDate getCompletedDate() {
 		return completedDate;
 	}
 
-	public void setCompletedDate(LocalDateTime completedDate) {
+	public void setCompletedDate(LocalDate completedDate) {
 		this.completedDate = completedDate;
 	}
 

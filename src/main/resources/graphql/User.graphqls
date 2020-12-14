@@ -1,3 +1,23 @@
 type User {
 	id: ID!
+	email: String
+	fullName: String
+	username: String
+	password: String
+	permissions: [Permission]
+	active: Boolean
+	createdAt: String
+	updatedAt: String
+}
+
+input UserInput {
+	email: String
+	fullName: String
+	username: String!
+	password: String!
+	confirmPassword: String!
+}
+
+extend type Mutation {
+	createUser(input: UserInput): User
 }

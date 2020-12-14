@@ -6,4 +6,6 @@ import java.util.List;
 
 public interface TodoQueryContract {
     List<Todo> getAllTodos();
+    List<Todo> getUserTodos(Long userId);
+    Todo getTodo(Long id);
 }
