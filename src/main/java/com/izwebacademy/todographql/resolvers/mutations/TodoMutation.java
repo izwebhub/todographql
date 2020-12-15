@@ -9,12 +9,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class TodoMutation implements GraphQLMutationResolver, TodoMutationContract {
+public class TodoMutation implements GraphQLMutationResolver {
 
     @Autowired
-    private TodoService todoService;
+    private TodoMutationContract todoService;
 
-    @Override
     public Todo createTodo(TodoInput input) {
         return todoService.createTodo(input);
     }

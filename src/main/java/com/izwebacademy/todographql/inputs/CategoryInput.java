@@ -1,11 +1,12 @@
 package com.izwebacademy.todographql.inputs;
 
-import com.sun.istack.NotNull;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Size;
 
 public class CategoryInput {
     private Long id;
 
-    @NotNull
+    @NotEmpty(message = "Name is required")
     private String name;
 
     private String description;

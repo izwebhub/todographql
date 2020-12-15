@@ -1,6 +1,6 @@
 package com.izwebacademy.todographql.services;
 
-import com.izwebacademy.todographql.EntityException;
+import com.izwebacademy.todographql.utils.EntityException;
 import com.izwebacademy.todographql.contracts.queries.PermissionQueryContract;
 import com.izwebacademy.todographql.models.Permission;
 import com.izwebacademy.todographql.models.User;

@@ -10,17 +10,17 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 @Component
-public class UserQuery implements GraphQLQueryResolver, UserQueryContract {
+public class UserQuery implements GraphQLQueryResolver {
 
     @Autowired
-    private UserService userService;
+    private UserQueryContract userService;
 
-    @Override
+
     public List<User> getAllUsers() {
         return userService.getAllUsers();
     }
 
-    @Override
+
     public User getUser(Long id) {
         return userService.getUser(id);
     }

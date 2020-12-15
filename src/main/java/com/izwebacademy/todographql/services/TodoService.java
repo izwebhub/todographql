@@ -1,6 +1,6 @@
 package com.izwebacademy.todographql.services;
 
-import com.izwebacademy.todographql.EntityException;
+import com.izwebacademy.todographql.utils.EntityException;
 import com.izwebacademy.todographql.contracts.mutations.TodoMutationContract;
 import com.izwebacademy.todographql.contracts.queries.TodoQueryContract;
 import com.izwebacademy.todographql.inputs.TodoInput;

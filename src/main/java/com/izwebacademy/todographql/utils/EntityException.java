@@ -1,4 +1,4 @@
-package com.izwebacademy.todographql;
+package com.izwebacademy.todographql.utils;
 
 import graphql.ErrorClassification;
 import graphql.GraphQLError;

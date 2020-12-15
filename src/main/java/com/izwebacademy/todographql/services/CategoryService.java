@@ -5,7 +5,7 @@ import java.util.Optional;
 
 import javax.transaction.Transactional;
 
-import com.izwebacademy.todographql.EntityException;
+import com.izwebacademy.todographql.utils.EntityException;
 import com.izwebacademy.todographql.contracts.mutations.CategoryMutationContract;
 import com.izwebacademy.todographql.inputs.CategoryInput;
 import org.springframework.beans.factory.annotation.Autowired;

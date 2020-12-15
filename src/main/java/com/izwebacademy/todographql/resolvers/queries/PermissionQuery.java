@@ -11,22 +11,21 @@ import java.util.List;
 import java.util.Optional;
 
 @Component
-public class PermissionQuery implements GraphQLQueryResolver, PermissionQueryContract {
+public class PermissionQuery implements GraphQLQueryResolver {
 
     @Autowired
-    private PermissionService permissionService;
+    private PermissionQueryContract permissionService;
 
-    @Override
+
     public List<Permission> getAllPermissions() {
         return permissionService.getAllPermissions();
     }
 
-    @Override
+
     public Optional<Permission> getPermission(Long id) {
         return permissionService.getPermission(id);
     }
 
-    @Override
     public List<Permission> getUserPermission(Long userId) {
         return permissionService.getUserPermission(userId);
     }

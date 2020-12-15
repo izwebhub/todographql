@@ -7,24 +7,26 @@ import com.izwebacademy.todographql.services.CategoryService;
 import graphql.kickstart.tools.GraphQLMutationResolver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.validation.annotation.Validated;
+
+import javax.validation.Valid;
 
 @Component
-public class CategoryMutation implements GraphQLMutationResolver, CategoryMutationContract {
-
+@Validated
+public class CategoryMutation implements GraphQLMutationResolver {
     @Autowired
-    private CategoryService categoryService;
+    private CategoryMutationContract categoryService;
 
-    @Override
-    public Category createCategory(CategoryInput input) {
+
+    public Category createCategory(@Valid CategoryInput input) {
         return categoryService.createCategory(input);
     }
 
-    @Override
+
     public Category updateCategory(CategoryInput input) {
         return categoryService.updateCategory(input);
     }
 
-    @Override
     public Category deleteCategory(Long id) {
         return categoryService.deleteCategory(id);
     }

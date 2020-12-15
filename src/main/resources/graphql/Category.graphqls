@@ -9,7 +9,7 @@ type Category  {
 
 input CategoryInput {
     id: ID
-    name: String!
+    name: String! # Client/Front-end Validation can serve the work, but we will need also backend/server bean validation for more flexiable and custom messages
     description: String
 }
 

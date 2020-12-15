@@ -12,17 +12,17 @@ import com.izwebacademy.todographql.services.CategoryService;
 import graphql.kickstart.tools.GraphQLQueryResolver;
 
 @Component
-public class CategoryQuery implements GraphQLQueryResolver, CategoryQueryContract {
+public class CategoryQuery implements GraphQLQueryResolver {
 
     @Autowired
-    private CategoryService categoryService;
+    private CategoryQueryContract categoryService;
 
-    @Override
+
     public List<Category> getCategories() {
         return categoryService.getCategories();
     }
 
-    @Override
+
     public Category getCategory(Long id) {
         return categoryService.getCategory(id);
     }

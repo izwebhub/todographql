@@ -1,15 +1,12 @@
 package com.izwebacademy.todographql.services;
 
-import com.izwebacademy.todographql.EntityException;
-import com.izwebacademy.todographql.contracts.mutations.TodoMutationContract;
+import com.izwebacademy.todographql.utils.EntityException;
 import com.izwebacademy.todographql.contracts.mutations.UserMutationContract;
 import com.izwebacademy.todographql.contracts.queries.UserQueryContract;
 import com.izwebacademy.todographql.inputs.AuthInput;
-import com.izwebacademy.todographql.inputs.TodoInput;
 import com.izwebacademy.todographql.inputs.UserInput;
 import com.izwebacademy.todographql.inputs.UserPermissionInput;
 import com.izwebacademy.todographql.models.Permission;
-import com.izwebacademy.todographql.models.Todo;
 import com.izwebacademy.todographql.models.TokenResponse;
 import com.izwebacademy.todographql.models.User;
 import com.izwebacademy.todographql.repositories.PermissionRepository;

@@ -1,6 +1,6 @@
 package com.izwebacademy.todographql.resolvers.mutations;
 
-import com.izwebacademy.todographql.EntityException;
+import com.izwebacademy.todographql.utils.EntityException;
 import com.izwebacademy.todographql.contracts.mutations.UserMutationContract;
 import com.izwebacademy.todographql.inputs.AuthInput;
 import com.izwebacademy.todographql.inputs.UserInput;
@@ -17,28 +17,29 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 @Component
-public class UserMutation implements GraphQLMutationResolver, UserMutationContract {
+public class UserMutation implements GraphQLMutationResolver {
+
 
     @Autowired
-    private UserService userService;
+    private UserMutationContract userService;
 
     @Autowired
     private Authenticator authenticator;
 
-    @Override
+
     public User createUser(UserInput input) {
         return userService.createUser(input);
     }
 
-    @Override
+
     public List<Permission> assignPermissions(UserPermissionInput input) {
         return userService.assignPermissions(input);
     }
 
-    @Override
+
     public TokenResponse authUser(AuthInput input) {
 
-        if(!authenticator.attempt(input.getUsername(), input.getPassword())) {
+        if (!authenticator.attempt(input.getUsername(), input.getPassword())) {
             throw new EntityException("Authentication Error", null);
         }
 

@@ -10,22 +10,22 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 @Component
-public class TodoQuery implements GraphQLQueryResolver, TodoQueryContract {
+public class TodoQuery implements GraphQLQueryResolver {
 
     @Autowired
-    private TodoService todoService;
+    private TodoQueryContract todoService;
 
-    @Override
+
     public List<Todo> getAllTodos() {
         return todoService.getAllTodos();
     }
 
-    @Override
+
     public List<Todo> getUserTodos(Long userId) {
         return todoService.getUserTodos(userId);
     }
 
-    @Override
+
     public Todo getTodo(Long id) {
         return todoService.getTodo(id);
     }
