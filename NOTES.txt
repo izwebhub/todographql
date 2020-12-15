@@ -1,0 +1,1 @@
+Bean Validation is a standard validation specification that allows us to easily validate domain objects by using a set of constraints declared in the form of annotations.

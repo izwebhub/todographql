@@ -33,6 +33,11 @@ input AuthInput {
 	password: String!
 }
 
+extend type Query  {
+	getAllUsers: [User]
+	getUser(id: ID!): User
+}
+
 extend type Mutation {
 	createUser(input: UserInput): User
 	authUser(input: AuthInput!): TokenResponse

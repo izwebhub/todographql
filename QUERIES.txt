@@ -1,0 +1,82 @@
+# {
+#   getCategories {
+#     id
+#     name
+#     active
+#   }
+# }
+
+# mutation {
+#   createUser(input: {
+#     username: "biggo",
+#     email: "joramkimata@gmail.com",
+#     fullName: "Joram Kimata",
+#     password: "12345",
+#     confirmPassword: "12345"
+#   }) {
+#     id
+#     email
+#     fullName
+#   }
+# }
+
+# mutation {
+#   createCategory(input: {
+#     name: "Programming"
+#   }) {
+#     id
+#     name
+#   }
+# }
+
+# {
+#   getCategory(id: 1) {
+#     id
+#     name
+#   }
+# }
+
+# mutation {
+#   deleteCategory(id: 1) {
+#     id
+#     active
+#   }
+# }
+
+# {
+#   getAllTodos {
+#     id
+#   }
+# }
+
+# mutation {
+#   createTodo(input: {
+#     userId: 1,
+#     title: "Studying GraphQL",
+#     description: "",
+#     startDate: "2020-01-01",
+#     endDate: "2020-02-01",
+#     categoryId: 1
+#   }) {
+#     id
+#   }
+# }
+
+# {
+#   getAllTodos {
+#     id
+#     title
+#   }
+# }
+
+
+# mutation {
+#   assignPermissions(input: {
+#     userId: 1,
+#     permissionIds: [1,2,3,4,5]
+#   }) {
+#     name
+#     description
+#   }
+# }
+

@@ -3,6 +3,7 @@ package com.izwebacademy.todographql.services;
 import com.izwebacademy.todographql.EntityException;
 import com.izwebacademy.todographql.contracts.mutations.TodoMutationContract;
 import com.izwebacademy.todographql.contracts.mutations.UserMutationContract;
+import com.izwebacademy.todographql.contracts.queries.UserQueryContract;
 import com.izwebacademy.todographql.inputs.AuthInput;
 import com.izwebacademy.todographql.inputs.TodoInput;
 import com.izwebacademy.todographql.inputs.UserInput;
@@ -24,7 +25,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 @Service
 @Transactional
-public class UserService implements UserMutationContract {
+public class UserService implements UserMutationContract, UserQueryContract {
 
     @Autowired
     private UserRepository userRepository;
@@ -37,7 +38,7 @@ public class UserService implements UserMutationContract {
 
     @Override
     public User createUser(UserInput input) {
-        String username = input.getUsernmae();
+        String username = input.getUsername();
         Optional<User> dbUser = userRepository.findByUsernameAndActiveTrue(username);
         if (dbUser.isPresent()) {
             throw new EntityException("User exists", "username");
@@ -98,5 +99,19 @@ public class UserService implements UserMutationContract {
 
     private String getPassword(UserInput input) {
         return bCryptPasswordEncoder.encode(input.getPassword());
+    }
+
+    @Override
+    public List<User> getAllUsers() {
+        return userRepository.findAllByActiveTrue();
+    }
+
+    @Override
+    public User getUser(Long id) {
+        Optional<User> dbUser = userRepository.findByIdAndActiveTrue(id);
+        if(!dbUser.isPresent()) {
+            throw new EntityException("User not found", id);
+        }
+        return dbUser.get();
     }
 }

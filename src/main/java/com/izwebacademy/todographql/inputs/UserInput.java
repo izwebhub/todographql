@@ -3,7 +3,7 @@ package com.izwebacademy.todographql.inputs;
 public class UserInput {
     private String email;
     private String fullName;
-    private String usernmae;
+    private String username;
     private String password;
     private String confirmPassword;
 
@@ -23,12 +23,12 @@ public class UserInput {
         this.fullName = fullName;
     }
 
-    public String getUsernmae() {
-        return usernmae;
+    public String getUsername() {
+        return username;
     }
 
-    public void setUsernmae(String usernmae) {
-        this.usernmae = usernmae;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getPassword() {
