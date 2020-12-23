@@ -117,6 +117,13 @@
         <!-- This transitively pulls in the dependency to the Bean Validation API (javax.validation:validation-api:). -->
         <!-- // -->
 
+        <!-- Spring AOP - Simpler version of AspectJ -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-aop</artifactId>
+        </dependency>
+        <!-- // -->
+
 
     </dependencies>
 

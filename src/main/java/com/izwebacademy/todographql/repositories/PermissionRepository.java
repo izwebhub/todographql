@@ -12,4 +12,6 @@ public interface PermissionRepository extends JpaRepository<Permission, Long> {
     Optional<Permission> findByIdAndActiveTrue(Long permissionId);
 
     List<Permission> findAllByActiveTrue();
+
+    Optional<Permission> findByActiveTrueAndName(String name);
 }
