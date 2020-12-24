@@ -28,6 +28,25 @@ public class User extends BaseEntity {
     @JoinTable(name = "graphql_user_permissions", joinColumns = @JoinColumn(name = "permission_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "users_id", referencedColumnName = "id"))
     private List<Permission> permissions;
 
+    public static User builder() {
+        return new User();
+    }
+
+    public User username(String usernmae) {
+        this.username = usernmae;
+        return this;
+    }
+
+    public User password(String password) {
+        this.password = password;
+        return this;
+    }
+
+    public User permissions(List<Permission> permissions) {
+        this.permissions = permissions;
+        return this;
+    }
+
     public Long getId() {
         return id;
     }

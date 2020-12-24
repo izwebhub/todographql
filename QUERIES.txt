@@ -1,13 +1,7 @@
-mutation authuser {
-  authUser(input: {
-    username: "biggwo5",
-    password: "12345"
-  }) {
-    token
-  }
-}
+# [USER MANAGEMENT]
 
-query getAllUsers{
+# Get All User
+query getAllUsers {
   getAllUsers {
     username
     password
@@ -15,8 +9,55 @@ query getAllUsers{
   }
 }
 
+query getPermissions {
+  getAllPermissions {
+    id
+    name
+    description
+  }
+}
 
+mutation assignPermissions {
+  assignPermissions(input: { userId: 1, permissionIds: [1, 2, 3, 4, 5] }) {
+    name
+    description
+  }
+}
 
+# Create User
+mutation createUser {
+  createUser(
+    input: {
+      username: "biggwo5"
+      email: "joramkimata@gmail.com"
+      fullName: "Joram Kimata"
+      password: "12345"
+      confirmPassword: "12345"
+    }
+  ) {
+    id
+    email
+    fullName
+  }
+}
+
+# Auth Normal User
+mutation authuser {
+  authUser(input: { username: "biggwo5", password: "12345" }) {
+    token
+  }
+}
+
+# Auth Admin User
+mutation authuserAdmin {
+  authUser(input: { username: "admin", password: "12345" }) {
+    token
+  }
+}
+
+# ---------------------------------------------------------
+
+# [CATEGORY MANAGEMENT]
 
 query getCategories {
   getCategories {
@@ -26,77 +67,46 @@ query getCategories {
   }
 }
 
-mutation createUser {
-  createUser(input: {
-    username: "biggwo5",
-    email: "joramkimata@gmail.com",
-    fullName: "Joram Kimata",
-    password: "12345",
-    confirmPassword: "12345"
-  }) {
-    id
-    email
-    fullName
-  }
-}
-
 mutation createCategory {
-  createCategory(input: {
-    name: ""
-  }) {
+  createCategory(input: { name: "" }) {
     id
     name
   }
 }
 
-query getCategory{
+query getCategory {
   getCategory(id: 1) {
     id
     name
   }
 }
 
-mutation  deleteCategory{
+mutation deleteCategory {
   deleteCategory(id: 1) {
     id
     active
   }
 }
 
-query getAllTodox {
+# -----------------------------------------------------
+
+query getAllTodos {
   getAllTodos {
     id
   }
 }
 
 mutation createTodo {
-  createTodo(input: {
-    userId: 1,
-    title: "Studying GraphQL",
-    description: "",
-    startDate: "2020-01-01",
-    endDate: "2020-02-01",
-    categoryId: 1
-  }) {
+  createTodo(
+    input: {
+      userId: 1
+      title: "Studying GraphQL"
+      description: ""
+      startDate: "2020-01-01"
+      endDate: "2020-02-01"
+      categoryId: 1
+    }
+  ) {
     id
   }
 }
-
-query getAllTodos{
-  getAllTodos {
-    id
-    title
-  }
-}
-
-
-mutation assignPermissions {
-  assignPermissions(input: {
-    userId: 1,
-    permissionIds: [1,2,3,4,5]
-  }) {
-    name
-    description
-  }
-}
-

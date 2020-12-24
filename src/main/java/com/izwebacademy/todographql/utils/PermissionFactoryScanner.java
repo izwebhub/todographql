@@ -3,11 +3,14 @@ package com.izwebacademy.todographql.utils;
 import com.izwebacademy.todographql.annotations.PermissionFactory;
 import com.izwebacademy.todographql.annotations.PermissionMetaData;
 import com.izwebacademy.todographql.models.Permission;
+import com.izwebacademy.todographql.models.User;
 import com.izwebacademy.todographql.repositories.PermissionRepository;
+import com.izwebacademy.todographql.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
 import org.springframework.core.type.filter.AnnotationTypeFilter;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import javax.transaction.Transactional;
 import java.lang.annotation.Annotation;
@@ -21,6 +24,10 @@ public class PermissionFactoryScanner {
 
     @Autowired
     private PermissionRepository permissionRepository;
+
+    @Autowired
+    private UserRepository userRepository;
+
 
     private String packageToScan = "";
 
@@ -36,11 +43,23 @@ public class PermissionFactoryScanner {
         return new PermissionFactoryScanner(debug, permissionRepo);
     }
 
+    public static PermissionFactoryScanner builder(Boolean debug,
+                                                   PermissionRepository permissionRepo, UserRepository userRepository) {
+        return new PermissionFactoryScanner(debug, permissionRepo, userRepository);
+    }
+
     // 1st Call
     private PermissionFactoryScanner(Boolean debug,
-                                    PermissionRepository permissionRepo) {
+                                     PermissionRepository permissionRepo) {
         this.debug = debug;
         this.permissionRepository = permissionRepo;
+    }
+
+    private PermissionFactoryScanner(Boolean debug,
+                                     PermissionRepository permissionRepo, UserRepository userRepository) {
+        this.debug = debug;
+        this.permissionRepository = permissionRepo;
+        this.userRepository = userRepository;
     }
 
     // 2nd Call
@@ -69,6 +88,29 @@ public class PermissionFactoryScanner {
                 }
             }
         }
+    }
+
+    public void seedWithAdmin(String admin, String password) {
+        List<Permission> perms = this.permissions;
+        for (Permission perm : perms) {
+            String name = perm.getName();
+            Optional<Permission> dbrole = this.permissionRepository.findByActiveTrueAndName(name);
+            if (!dbrole.isPresent()) {
+                if (debug) {
+                    this.permissionRepository.save(perm);
+                }
+            }
+        }
+
+        Optional<User> dbUser = this.userRepository.findByUsernameAndActiveTrue(admin);
+
+        if (!dbUser.isPresent()) {
+            User user = User.builder().username(admin).password(password).permissions(perms);
+            userRepository.save(user);
+            System.out.println("User: " + admin + " added!");
+        }
+
+
     }
 
     private ClassPathScanningCandidateComponentProvider createComponentScanner() {

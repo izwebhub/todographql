@@ -1,6 +1,7 @@
 package com.izwebacademy.todographql;
 
 import com.izwebacademy.todographql.repositories.PermissionRepository;
+import com.izwebacademy.todographql.repositories.UserRepository;
 import com.izwebacademy.todographql.utils.PermissionFactoryScanner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -14,24 +15,32 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 @EnableAspectJAutoProxy
 public class TodographqlApplication implements CommandLineRunner {
 
-	private Boolean debug = true;
+    private Boolean debug = true;
 
-	@Autowired
-	private PermissionRepository permissionRepository;
+    @Autowired
+    private PermissionRepository permissionRepository;
 
-	private String packageToScan = "com.izwebacademy.todographql";
+    @Autowired
+    private UserRepository userRepository;
 
-	public static void main(String[] args) {
-		SpringApplication.run(TodographqlApplication.class, args);
-	}
+    @Autowired
+    private BCryptPasswordEncoder encoder;
 
-	@Bean
-	BCryptPasswordEncoder bCryptPasswordEncoder() {
-		return new BCryptPasswordEncoder();
-	}
+    private String packageToScan = "com.izwebacademy.todographql";
 
-	@Override
-	public void run(String... args) throws Exception {
-		PermissionFactoryScanner.builder(debug, permissionRepository).findAPermissions(packageToScan).seed();
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(TodographqlApplication.class, args);
+    }
+
+    @Bean
+    BCryptPasswordEncoder bCryptPasswordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
+    @Override
+    public void run(String... args) throws Exception {
+        String password = encoder.encode("12345");
+        PermissionFactoryScanner.builder(debug, permissionRepository, userRepository).findAPermissions(packageToScan).seedWithAdmin("admin", password);
+
+    }
 }
