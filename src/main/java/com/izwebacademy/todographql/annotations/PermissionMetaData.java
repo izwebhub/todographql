@@ -11,7 +11,7 @@ import java.lang.annotation.Target;
 @Target(METHOD)
 public @interface PermissionMetaData {
 
-	String roleName();
+	String permissionName();
 
 	String description();
 

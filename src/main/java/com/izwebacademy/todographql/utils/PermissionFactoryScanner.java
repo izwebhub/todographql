@@ -31,15 +31,20 @@ public class PermissionFactoryScanner {
     public PermissionFactoryScanner() {
     }
 
+    public static PermissionFactoryScanner builder(Boolean debug,
+                                                   PermissionRepository permissionRepo) {
+        return new PermissionFactoryScanner(debug, permissionRepo);
+    }
+
     // 1st Call
-    public PermissionFactoryScanner(Boolean debug,
+    private PermissionFactoryScanner(Boolean debug,
                                     PermissionRepository permissionRepo) {
         this.debug = debug;
         this.permissionRepository = permissionRepo;
     }
 
     // 2nd Call
-    public PermissionFactoryScanner findAnnotatedClasses(String scanPackage) {
+    public PermissionFactoryScanner findAPermissions(String scanPackage) {
 
         this.permissions = new ArrayList<>();
 
@@ -53,7 +58,7 @@ public class PermissionFactoryScanner {
     }
 
     // 3rd Call
-    public void commit() {
+    public void seed() {
         List<Permission> perms = this.permissions;
         for (Permission perm : perms) {
             String name = perm.getName();
@@ -80,7 +85,7 @@ public class PermissionFactoryScanner {
             for (Method method : cl.getMethods()) {
                 if (method.isAnnotationPresent(PermissionMetaData.class)) {
 
-                    String permname = method.getAnnotation(PermissionMetaData.class).roleName();
+                    String permname = method.getAnnotation(PermissionMetaData.class).permissionName();
                     String description = method.getAnnotation(PermissionMetaData.class).description();
 
                     Permission availablePerm = new Permission();

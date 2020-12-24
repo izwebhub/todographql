@@ -1,5 +1,7 @@
 package com.izwebacademy.todographql.resolvers.mutations;
 
+import com.izwebacademy.todographql.annotations.PermissionFactory;
+import com.izwebacademy.todographql.annotations.PermissionMetaData;
 import com.izwebacademy.todographql.contracts.mutations.CategoryMutationContract;
 import com.izwebacademy.todographql.inputs.CategoryInput;
 import com.izwebacademy.todographql.models.Category;
@@ -13,20 +15,22 @@ import javax.validation.Valid;
 
 @Component
 @Validated
+@PermissionFactory
 public class CategoryMutation implements GraphQLMutationResolver {
     @Autowired
     private CategoryMutationContract categoryService;
 
-
+    @PermissionMetaData(permissionName = "CREATE_CATEGORY", description = "Create New Category")
     public Category createCategory(@Valid CategoryInput input) {
         return categoryService.createCategory(input);
     }
 
-
+    @PermissionMetaData(permissionName = "UPDATE_CATEGORY", description = "Update existing Category")
     public Category updateCategory(CategoryInput input) {
         return categoryService.updateCategory(input);
     }
 
+    @PermissionMetaData(permissionName = "DELETE_CATEGORY", description = "Delete existing Category")
     public Category deleteCategory(Long id) {
         return categoryService.deleteCategory(id);
     }

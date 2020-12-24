@@ -1,5 +1,7 @@
 package com.izwebacademy.todographql.resolvers.mutations;
 
+import com.izwebacademy.todographql.annotations.PermissionFactory;
+import com.izwebacademy.todographql.annotations.PermissionMetaData;
 import com.izwebacademy.todographql.contracts.mutations.TodoMutationContract;
 import com.izwebacademy.todographql.inputs.TodoInput;
 import com.izwebacademy.todographql.models.Todo;
@@ -9,11 +11,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
+@PermissionFactory
 public class TodoMutation implements GraphQLMutationResolver {
 
     @Autowired
     private TodoMutationContract todoService;
 
+    @PermissionMetaData(permissionName = "CREATE_TODO", description = "Create New Todo")
     public Todo createTodo(TodoInput input) {
         return todoService.createTodo(input);
     }
