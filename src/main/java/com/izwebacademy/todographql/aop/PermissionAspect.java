@@ -13,6 +13,7 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -38,23 +39,7 @@ public class PermissionAspect {
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
         PermissionMetaData annotation = signature.getMethod().getAnnotation(PermissionMetaData.class);
 
-        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder
-                .currentRequestAttributes())
-                .getRequest();
-
-        String authorization = request.getHeader("Authorization");
-
-        if (authorization == null) {
-            throw new GenericException("Authorization Error", null);
-        }
-
-        String token = authorization.replace("Bearer ", "");
-
-        JwtUser jwtUser = jwtUtil.validate(token);
-
-        if (jwtUser == null) {
-            throw new GenericException("Invalid Token", token);
-        }
+        JwtUser jwtUser = jwtUtil.getJwtUser();
 
         String username = jwtUser.getUsername();
 
@@ -75,6 +60,8 @@ public class PermissionAspect {
         }
 
     }
+
+
 
 
 }

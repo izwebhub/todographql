@@ -51,8 +51,8 @@ public class CategoryService implements CategoryQueryContract, CategoryMutationC
     }
 
     @Override
-    public Category updateCategory(CategoryInput input) {
-        Long id = input.getId();
+    public Category updateCategory(Long id, CategoryInput input) {
+
         if (id == null) {
             throw new EntityException("Please provide id", "id");
         }

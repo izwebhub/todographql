@@ -1,25 +1,24 @@
 type Category  {
-	id: ID!
-	name: String!
-	description: String
+    id: ID!
+    name: String!
+    description: String
     active: Boolean
     createdAt: String
     updatedAt: String
 }
 
 input CategoryInput {
-    id: ID
     name: String! # Client/Front-end Validation can serve the work, but we will need also backend/server bean validation for more flexiable and custom messages
     description: String
 }
 
 type Query {
-	getCategories: [Category]
-	getCategory(id: ID!): Category
+    getCategories: [Category]
+    getCategory(id: ID!): Category
 }
 
 type Mutation {
     createCategory(input: CategoryInput!): Category
-    updateCategory(input: CategoryInput!): Category
+    updateCategory(id: ID!, input: CategoryInput!): Category
     deleteCategory(id: ID!): Category
 }

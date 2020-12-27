@@ -32,4 +32,9 @@ public class TodoQuery implements GraphQLQueryResolver {
     public Todo getTodo(Long id) {
         return todoService.getTodo(id);
     }
+    
+    @PermissionMetaData(permissionName = "GET_MY_TODOS", description = "Get My Todos")
+    public List<Todo> getMyTodos() {
+    	return todoService.getMyTodos();
+    }
 }

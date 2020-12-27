@@ -1,6 +1,8 @@
 package com.izwebacademy.todographql.services;
 
+import com.izwebacademy.todographql.models.JwtUser;
 import com.izwebacademy.todographql.utils.EntityException;
+import com.izwebacademy.todographql.utils.GenericException;
 import com.izwebacademy.todographql.contracts.mutations.TodoMutationContract;
 import com.izwebacademy.todographql.contracts.queries.TodoQueryContract;
 import com.izwebacademy.todographql.inputs.TodoInput;
@@ -10,6 +12,7 @@ import com.izwebacademy.todographql.models.User;
 import com.izwebacademy.todographql.repositories.CategoryRepository;
 import com.izwebacademy.todographql.repositories.TodoRepository;
 import com.izwebacademy.todographql.repositories.UserRepository;
+import com.izwebacademy.todographql.utils.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,54 +25,88 @@ import java.util.Optional;
 @Transactional
 public class TodoService implements TodoQueryContract, TodoMutationContract {
 
-    @Autowired
-    private TodoRepository todoRepository;
+	@Autowired
+	private TodoRepository todoRepository;
 
-    @Autowired
-    private CategoryRepository categoryRepository;
+	@Autowired
+	private CategoryRepository categoryRepository;
 
-    @Autowired
-    private UserRepository userRepository;
+	@Autowired
+	private UserRepository userRepository;
 
-    @Override
-    public List<Todo> getAllTodos() {
-        return todoRepository.findAllByActiveTrue();
-    }
+	@Autowired
+	private JwtUtil jwtUtil;
 
-    @Override
-    public List<Todo> getUserTodos(Long userId) {
-        return todoRepository.findByCreatedByAndActiveTrue(userId);
-    }
+	@Override
+	public List<Todo> getAllTodos() {
+		return todoRepository.findAllByActiveTrue();
+	}
 
-    @Override
-    public Todo getTodo(Long id) {
-        return todoRepository.findByIdAndActiveTrue(id);
-    }
+	@Override
+	public List<Todo> getUserTodos(Long userId) {
+		Optional<User> dbUser = userRepository.findByIdAndActiveTrue(userId);
+		if (!dbUser.isPresent()) {
+			throw new EntityException("User not found", userId);
+		}
+		return todoRepository.findByCreatedByAndActiveTrue(dbUser.get());
+	}
 
-    @Override
-    public Todo createTodo(TodoInput input) {
+	@Override
+	public Todo getTodo(Long id) {
+		return todoRepository.findByIdAndActiveTrue(id);
+	}
 
-        Long categoryId = input.getCategoryId();
-        Optional<Category> dbCategory = categoryRepository.findByIdAndActiveTrue(categoryId);
-        if (!dbCategory.isPresent()) {
-            throw new EntityException("Category not found!", "categoryId");
-        }
-        Optional<User> dbUser = userRepository.findByIdAndActiveTrue(input.getUserId());
-        if (!dbUser.isPresent()) {
-            throw new EntityException("User not found", "userId");
-        }
+	@Override
+	public List<Todo> getMyTodos() {
+		Long userId = jwtUtil.getUserId();
+		User dbUser = userRepository.getOne(userId);
+		if (dbUser == null) {
+			throw new EntityException("User not found", userId);
+		}
 
-        Optional<Todo> dbTodo = todoRepository.checkExistence(input.getTitle(), dbUser.get());
-        if (dbTodo.isPresent()) {
-            throw new EntityException("Todo exists", null);
-        }
+		return todoRepository.findByCreatedByAndActiveTrue(dbUser);
+	}
 
-        Todo todo = new Todo(input.getTitle(), input.getDescription(), this.convertStringToLD(input.getStartDate()), this.convertStringToLD(input.getEndDate()), dbCategory.get(), dbUser.get());
+	@Override
+	public Todo createTodo(TodoInput input) {
 
-        return todoRepository.save(todo);
-    }
+		Long categoryId = input.getCategoryId();
+		Optional<Category> dbCategory = categoryRepository.findByIdAndActiveTrue(categoryId);
+		if (!dbCategory.isPresent()) {
+			throw new EntityException("Category not found!", "categoryId");
+		}
 
-    private LocalDate convertStringToLD(String dateInput) {
-        return LocalDate.parse(dateInput);
-    }
+		Long userId = input.getUserId();
+
+		if (userId == null) {
+			// Current Loggin User
+			userId = jwtUtil.getUserId();
+		}
+
+		Optional<User> dbUser = userRepository.findByIdAndActiveTrue(userId);
+		if (!dbUser.isPresent()) {
+			throw new EntityException("User not found", "userId");
+		}
+
+		Optional<Todo> dbTodo = todoRepository.checkExistence(input.getTitle(), dbUser.get());
+		if (dbTodo.isPresent()) {
+			throw new EntityException("Todo exists", null);
+		}
+
+		LocalDate startDate = this.convertStringToLD(input.getStartDate());
+		LocalDate endDate = this.convertStringToLD(input.getEndDate());
+		
+		if(startDate.isAfter(endDate)) {
+			throw new GenericException("End Date should be after Start date", null);
+		}
+		
+		Todo todo = new Todo(input.getTitle(), input.getDescription(), startDate,
+				endDate, dbCategory.get(), dbUser.get());
+
+		return todoRepository.save(todo);
+	}
+
+	private LocalDate convertStringToLD(String dateInput) {
+		return LocalDate.parse(dateInput);
+	}
 }

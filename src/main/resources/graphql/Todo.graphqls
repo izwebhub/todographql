@@ -14,8 +14,9 @@ type Todo {
     updatedAt: String
 }
 
+
 input TodoInput {
-    userId: ID! # same as createdBy # We will remove this when we implement AUTH System, we will use the current logging user!
+    userId: ID # We make optional for USER and required for ADMIN
     title: String!
     description: String
     startDate: String!
@@ -23,9 +24,11 @@ input TodoInput {
     categoryId: ID!
 }
 
+
+
 extend type Query {
     getAllTodos: [Todo]
-    # getMyTodos: [Todo] will implement this after AUTH System
+    getMyTodos: [Todo] # will implement this after AUTH System
     getUserTodos(userId: ID!): [Todo]
     getTodo(id: ID!): Todo
 }

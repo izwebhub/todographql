@@ -26,8 +26,8 @@ public class CategoryMutation implements GraphQLMutationResolver {
     }
 
     @PermissionMetaData(permissionName = "UPDATE_CATEGORY", description = "Update existing Category")
-    public Category updateCategory(CategoryInput input) {
-        return categoryService.updateCategory(input);
+    public Category updateCategory(Long id, @Valid CategoryInput input) {
+        return categoryService.updateCategory(id, input);
     }
 
     @PermissionMetaData(permissionName = "DELETE_CATEGORY", description = "Delete existing Category")

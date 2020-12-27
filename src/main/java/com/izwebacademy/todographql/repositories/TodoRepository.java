@@ -16,7 +16,7 @@ public interface TodoRepository extends JpaRepository<Todo, Long> {
     @Query("SELECT t FROM Todo t WHERE t.active=true AND t.title=?1 AND t.createdBy=?2")
     Optional<Todo> checkExistence(String title, User createsBy);
 
-    List<Todo> findByCreatedByAndActiveTrue(Long userId);
+    List<Todo> findByCreatedByAndActiveTrue(User createBy);
 
     Todo findByIdAndActiveTrue(Long id);
 }

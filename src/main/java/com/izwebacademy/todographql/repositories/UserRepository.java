@@ -11,7 +11,7 @@ import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, Long> {
 
-    String DELETE_USER_PERMS = "DELETE FROM `graphql_user_permissions` WHERE users_id=?1";
+    String DELETE_USER_PERMS = "DELETE FROM graphql_user_permissions WHERE users_id=?1";
 
     Optional<User> findByIdAndActiveTrue(Long userId);
 
