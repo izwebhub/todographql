@@ -10,7 +10,13 @@ import com.izwebacademy.todographql.models.User;
 import java.util.List;
 
 public interface UserMutationContract {
-    User createUser(UserInput input);
-    List<Permission> assignPermissions(UserPermissionInput input);
-    TokenResponse authUser(AuthInput input);
+	User createUser(UserInput input);
+
+	List<Permission> assignPermissions(UserPermissionInput input);
+
+	TokenResponse authUser(AuthInput input);
+
+	User activateUser(Long userId);
+
+	User blockUser(Long userId);
 }

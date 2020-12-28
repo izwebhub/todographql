@@ -31,9 +31,20 @@ extend type Query {
     getMyTodos: [Todo] # will implement this after AUTH System
     getUserTodos(userId: ID!): [Todo]
     getTodo(id: ID!): Todo
+    # NotYetImplemented
+    getAllOverDueTodos(endDate: String!): [Todo]
+    getMyOverDueTodos(endDate: String!): [Todo]
+    # Home Work
+    # getAllUserOverDueTodos -> (endDate, userId)
+    # getAllTodosBwt -> (startDate, endDate)
 }
 
 extend type Mutation  {
     createTodo(input: TodoInput!): Todo
+    # NotYetImplemented
+    updateTodo(id: ID!, input: TodoInput!): Todo
+    deleteTodo(id: ID!): Todo
+    completeMyTodo(todoId: ID!): Todo
+    completeUserTodo(userId: ID!, todoId: ID!): Todo
 
 }

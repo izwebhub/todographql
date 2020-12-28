@@ -13,21 +13,21 @@ import java.util.Optional;
 @Transactional
 public class Authenticator {
 
-    @Autowired
-    private UserRepository userRepository;
+	@Autowired
+	private UserRepository userRepository;
 
-    @Autowired
-    private BCryptPasswordEncoder bCryptPasswordEncoder;
+	@Autowired
+	private BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    // We will use our own custom security
-    public boolean attempt(String username, String password) {
+	// We will use our own custom security
+	public boolean attempt(String username, String password) {
 
-        Optional<User> dbUser = userRepository.findByUsernameAndActiveTrue(username);
-        if (dbUser.isPresent()) {
-            User user = dbUser.get();
-            String userPassword = user.getPassword();
-            return bCryptPasswordEncoder.matches(password, userPassword);
-        }
-        return false;
-    }
+		Optional<User> dbUser = userRepository.findByUsernameAndActiveTrue(username);
+		if (dbUser.isPresent()) {
+			User user = dbUser.get();
+			String userPassword = user.getPassword();
+			return bCryptPasswordEncoder.matches(password, userPassword) && user.isActive();
+		}
+		return false;
+	}
 }

@@ -42,4 +42,6 @@ extend type Mutation {
 	createUser(input: UserInput): User
 	authUser(input: AuthInput!): TokenResponse
 	assignPermissions(input: UserPermissionInput!): [Permission]
+	activateUser(userId: ID!): User
+	blockUser(userId: ID!): User
 }

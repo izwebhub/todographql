@@ -26,4 +26,24 @@ public class TodoMutation implements GraphQLMutationResolver {
 	public Todo createTodo(@Valid TodoInput input) {
 		return todoService.createTodo(input);
 	}
+
+	@PermissionMetaData(permissionName = "UPDATE_TODO", description = "Update Todo")
+	public Todo updateTodo(Long id, TodoInput input) {
+		return todoService.updateTodo(id, input);
+	}
+
+	@PermissionMetaData(permissionName = "DELETE_TODO", description = "Delete Todo")
+	public Todo deleteTodo(Long id) {
+		return todoService.deleteTodo(id);
+	}
+
+	@PermissionMetaData(permissionName = "COMPLETE_MY_TODO", description = "Complete My Todo")
+	public Todo completeMyTodo(Long todoId) {
+		return todoService.completeMyTodo(todoId);
+	}
+
+	@PermissionMetaData(permissionName = "COMPLETE_USER_TODO", description = "Complete User Todo")
+	public Todo completeUserTodo(Long userId, Long todoId) {
+		return todoService.completeUserTodo(userId, todoId);
+	}
 }

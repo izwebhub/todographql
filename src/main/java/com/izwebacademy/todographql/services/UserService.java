@@ -1,11 +1,14 @@
 package com.izwebacademy.todographql.services;
 
+import com.izwebacademy.todographql.utils.Authenticator;
 import com.izwebacademy.todographql.utils.EntityException;
+import com.izwebacademy.todographql.utils.JwtUtil;
 import com.izwebacademy.todographql.contracts.mutations.UserMutationContract;
 import com.izwebacademy.todographql.contracts.queries.UserQueryContract;
 import com.izwebacademy.todographql.inputs.AuthInput;
 import com.izwebacademy.todographql.inputs.UserInput;
 import com.izwebacademy.todographql.inputs.UserPermissionInput;
+import com.izwebacademy.todographql.models.JwtUser;
 import com.izwebacademy.todographql.models.Permission;
 import com.izwebacademy.todographql.models.TokenResponse;
 import com.izwebacademy.todographql.models.User;
@@ -24,91 +27,115 @@ import java.util.concurrent.CopyOnWriteArrayList;
 @Transactional
 public class UserService implements UserMutationContract, UserQueryContract {
 
-    @Autowired
-    private UserRepository userRepository;
+	@Autowired
+	private UserRepository userRepository;
 
-    @Autowired
-    private PermissionRepository permissionRepository;
+	@Autowired
+	private PermissionRepository permissionRepository;
 
-    @Autowired
-    private BCryptPasswordEncoder bCryptPasswordEncoder;
+	@Autowired
+	private BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    @Override
-    public User createUser(UserInput input) {
-        String username = input.getUsername();
-        Optional<User> dbUser = userRepository.findByUsernameAndActiveTrue(username);
-        if (dbUser.isPresent()) {
-            throw new EntityException("User exists", "username");
-        }
+	@Autowired
+	private Authenticator authenticator;
 
-        // Validation is done on Entity Base Annotation
-        User user = new User();
-        user.setUsername(username);
-        user.setFullName(input.getFullName());
-        user.setEmail(input.getEmail());
-        user.setPassword(getPassword(input));
+	@Autowired
+	private JwtUtil jwtUtil;
 
-        return userRepository.save(user);
-    }
+	@Override
+	public User createUser(UserInput input) {
+		String username = input.getUsername();
+		Optional<User> dbUser = userRepository.findByUsernameAndActiveTrue(username);
+		if (dbUser.isPresent()) {
+			throw new EntityException("User exists", "username");
+		}
 
-    @Override
-    public List<Permission> assignPermissions(UserPermissionInput input) {
+		// Validation is done on Entity Base Annotation
+		User user = new User();
+		user.setUsername(username);
+		user.setFullName(input.getFullName());
+		user.setEmail(input.getEmail());
+		user.setPassword(getPassword(input));
 
-        Optional<User> dbUser = userRepository.findByIdAndActiveTrue(input.getUserId());
+		return userRepository.save(user);
+	}
 
-        if(!dbUser.isPresent()) {
-            throw new EntityException("User not found", "userId");
-        }
+	@Override
+	public List<Permission> assignPermissions(UserPermissionInput input) {
 
-        List<Long> permissionIds = input.getPermissionIds();
+		Optional<User> dbUser = userRepository.findByIdAndActiveTrue(input.getUserId());
 
-        List<Permission> permissions = new CopyOnWriteArrayList<>();
+		if (!dbUser.isPresent()) {
+			throw new EntityException("User not found", "userId");
+		}
 
-        for (Long permissionId :
-                permissionIds) {
-            Optional<Permission> dbPerm = permissionRepository.findByIdAndActiveTrue(permissionId);
-            if(!dbPerm.isPresent()) {
-                throw new EntityException("Permission not found", permissionId);
-            }
+		List<Long> permissionIds = input.getPermissionIds();
 
-            permissions.add(dbPerm.get());
-        }
+		List<Permission> permissions = new CopyOnWriteArrayList<>();
 
-        User user = dbUser.get();
-        if(!user.getPermissions().isEmpty()) {
-            // Clean the exists
-            int deleted = userRepository.deleteAllUserPerms(input.getUserId());
-            if(deleted == 0) {
-                throw new EntityException("User permissions could be cleared", null);
-            }
-        }
+		for (Long permissionId : permissionIds) {
+			Optional<Permission> dbPerm = permissionRepository.findByIdAndActiveTrue(permissionId);
+			if (!dbPerm.isPresent()) {
+				throw new EntityException("Permission not found", permissionId);
+			}
 
-        user.setPermissions(permissions);
-        userRepository.save(user);
+			permissions.add(dbPerm.get());
+		}
 
-        return permissions;
-    }
+		User user = dbUser.get();
+		if (!user.getPermissions().isEmpty()) {
+			// Clean the exists
+			int deleted = userRepository.deleteAllUserPerms(input.getUserId());
+			if (deleted == 0) {
+				throw new EntityException("User permissions could be cleared", null);
+			}
+		}
 
-    @Override
-    public TokenResponse authUser(AuthInput input) {
-        return null;
-    }
+		user.setPermissions(permissions);
+		userRepository.save(user);
 
-    private String getPassword(UserInput input) {
-        return bCryptPasswordEncoder.encode(input.getPassword());
-    }
+		return permissions;
+	}
 
-    @Override
-    public List<User> getAllUsers() {
-        return userRepository.findAllByActiveTrue();
-    }
+	@Override
+	public TokenResponse authUser(AuthInput input) {
+		if (!authenticator.attempt(input.getUsername(), input.getPassword())) {
+			throw new EntityException("Authentication Error", null);
+		}
 
-    @Override
-    public User getUser(Long id) {
-        Optional<User> dbUser = userRepository.findByIdAndActiveTrue(id);
-        if(!dbUser.isPresent()) {
-            throw new EntityException("User not found", id);
-        }
-        return dbUser.get();
-    }
+		TokenResponse tokenResponse = new TokenResponse();
+		tokenResponse.setToken(jwtUtil.generate(new JwtUser(input.getUsername())));
+
+		return tokenResponse;
+	}
+
+	private String getPassword(UserInput input) {
+		return bCryptPasswordEncoder.encode(input.getPassword());
+	}
+
+	@Override
+	public List<User> getAllUsers() {
+		return userRepository.findAllByActiveTrue();
+	}
+
+	@Override
+	public User getUser(Long id) {
+		Optional<User> dbUser = userRepository.findByIdAndActiveTrue(id);
+		if (!dbUser.isPresent()) {
+			throw new EntityException("User not found", id);
+		}
+		return dbUser.get();
+	}
+
+	@Override
+	public User activateUser(Long userId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public User blockUser(Long userId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

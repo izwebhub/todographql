@@ -1,8 +1,14 @@
 package com.izwebacademy.todographql.services;
 
-import com.izwebacademy.todographql.models.JwtUser;
-import com.izwebacademy.todographql.utils.EntityException;
-import com.izwebacademy.todographql.utils.GenericException;
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Optional;
+
+import javax.transaction.Transactional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.izwebacademy.todographql.contracts.mutations.TodoMutationContract;
 import com.izwebacademy.todographql.contracts.queries.TodoQueryContract;
 import com.izwebacademy.todographql.inputs.TodoInput;
@@ -12,14 +18,9 @@ import com.izwebacademy.todographql.models.User;
 import com.izwebacademy.todographql.repositories.CategoryRepository;
 import com.izwebacademy.todographql.repositories.TodoRepository;
 import com.izwebacademy.todographql.repositories.UserRepository;
+import com.izwebacademy.todographql.utils.EntityException;
+import com.izwebacademy.todographql.utils.GenericException;
 import com.izwebacademy.todographql.utils.JwtUtil;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import javax.transaction.Transactional;
-import java.time.LocalDate;
-import java.util.List;
-import java.util.Optional;
 
 @Service
 @Transactional
@@ -108,5 +109,41 @@ public class TodoService implements TodoQueryContract, TodoMutationContract {
 
 	private LocalDate convertStringToLD(String dateInput) {
 		return LocalDate.parse(dateInput);
+	}
+
+	@Override
+	public Todo updateTodo(Long id, TodoInput input) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Todo deleteTodo(Long id) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Todo completeMyTodo(Long todoId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Todo completeUserTodo(Long userId, Long todoId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<Todo> getAllOverDueTodos(LocalDate endDate) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<Todo> getMyOverDueTodos(LocalDate endDate) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }
