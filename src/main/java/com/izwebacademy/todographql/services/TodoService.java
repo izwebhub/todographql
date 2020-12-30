@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import com.izwebacademy.todographql.contracts.mutations.TodoMutationContract;
 import com.izwebacademy.todographql.contracts.queries.TodoQueryContract;
+import com.izwebacademy.todographql.enums.TodoStatus;
 import com.izwebacademy.todographql.inputs.TodoInput;
 import com.izwebacademy.todographql.models.Category;
 import com.izwebacademy.todographql.models.Todo;
@@ -96,48 +97,98 @@ public class TodoService implements TodoQueryContract, TodoMutationContract {
 
 		LocalDate startDate = this.convertStringToLD(input.getStartDate());
 		LocalDate endDate = this.convertStringToLD(input.getEndDate());
-		
-		if(startDate.isAfter(endDate)) {
+
+		if (startDate.isAfter(endDate)) {
 			throw new GenericException("End Date should be after Start date", null);
 		}
-		
-		Todo todo = new Todo(input.getTitle(), input.getDescription(), startDate,
-				endDate, dbCategory.get(), dbUser.get());
+
+		Todo todo = new Todo(input.getTitle(), input.getDescription(), startDate, endDate, dbCategory.get(),
+				dbUser.get());
 
 		return todoRepository.save(todo);
 	}
 
 	private LocalDate convertStringToLD(String dateInput) {
-		return LocalDate.parse(dateInput);
+		try {
+			return LocalDate.parse(dateInput);
+		} catch (Exception e) {
+			throw new GenericException("Check your date format", e.getLocalizedMessage());
+		}
+
 	}
 
 	@Override
 	public Todo updateTodo(Long id, TodoInput input) {
-		// TODO Auto-generated method stub
-		return null;
+		Todo dbTodo = todoRepository.findByIdAndActiveTrue(id);
+		if (dbTodo == null) {
+			throw new EntityException("Todo not found", id);
+		}
+
+		LocalDate startDate = this.convertStringToLD(input.getStartDate());
+		LocalDate endDate = this.convertStringToLD(input.getEndDate());
+
+		if (startDate.isAfter(endDate)) {
+			throw new GenericException("End Date should be after Start date", null);
+		}
+
+		Long userId = input.getUserId();
+
+		if (userId == null) {
+			// Current Loggin User
+			userId = jwtUtil.getUserId();
+		}
+
+		Optional<User> dbUser = userRepository.findByIdAndActiveTrue(userId);
+		if (!dbUser.isPresent()) {
+			throw new EntityException("User not found", "userId");
+		}
+
+		String title = input.getTitle();
+		Optional<Todo> existTodo = todoRepository.checkExistence(title, dbUser.get(), id);
+
+		if (existTodo.isPresent()) {
+			throw new EntityException("Todo exists", title);
+		}
+
+		Long categoryId = input.getCategoryId();
+		Optional<Category> dbCategory = categoryRepository.findByIdAndActiveTrue(categoryId);
+		if (!dbCategory.isPresent()) {
+			throw new EntityException("Category not found!", "categoryId");
+		}
+
+		// Check if the todo is not completed yet!
+		if (dbTodo.getCompleted()) {
+			throw new GenericException("Todo is completed", dbTodo);
+		}
+
+		dbTodo.setTitle(title);
+		dbTodo.setDescription(input.getDescription());
+		dbTodo.setCategory(dbCategory.get());
+		dbTodo.setStartDate(startDate);
+		dbTodo.setEndDate(endDate);
+
+		return todoRepository.save(dbTodo);
 	}
 
 	@Override
 	public Todo deleteTodo(Long id) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
-	@Override
-	public Todo completeMyTodo(Long todoId) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+		Todo dbTodo = todoRepository.findByIdAndActiveTrue(id);
+		if (dbTodo == null) {
+			throw new EntityException("Todo not found", id);
+		}
 
-	@Override
-	public Todo completeUserTodo(Long userId, Long todoId) {
-		// TODO Auto-generated method stub
-		return null;
+		try {
+			todoRepository.deleteTodo(id);
+		} catch (Exception e) {
+			throw new GenericException("Todo could not be deleted", id);
+		}
+
+		return dbTodo;
 	}
 
 	@Override
 	public List<Todo> getAllOverDueTodos(LocalDate endDate) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -145,5 +196,73 @@ public class TodoService implements TodoQueryContract, TodoMutationContract {
 	public List<Todo> getMyOverDueTodos(LocalDate endDate) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public Todo completeMyTodo(Long todoId, String completeDate) {
+		Todo dbTodo = todoRepository.findByIdAndActiveTrue(todoId);
+		if (dbTodo == null) {
+			throw new EntityException("Todo not found", todoId);
+		}
+		
+		Long userId = jwtUtil.getUserId();
+		
+		User user = userRepository.getOne(userId);
+		
+		if (!dbTodo.getCreatedBy().equals(user)) {
+			throw new GenericException("You can not complete someone's todo", dbTodo);
+		}
+
+		LocalDate completedDate = this.convertStringToLD(completeDate);
+
+		if (dbTodo.getCompletedDate().equals(completedDate)) {
+			// Complete on time
+			dbTodo.setCompleted(true);
+			dbTodo.setStatus(TodoStatus.COMPLETED);
+			dbTodo.setCompletedDate(completedDate);
+			return todoRepository.save(dbTodo);
+		} else if (dbTodo.getCompletedDate().isBefore(completedDate)) {
+			// Overdue
+			dbTodo.setStatus(TodoStatus.OVERDUED);
+			dbTodo.setCompletedDate(completedDate);
+			return todoRepository.save(dbTodo);
+		}
+
+		return dbTodo;
+	}
+
+	@Override
+	public Todo completeUserTodo(Long userId, Long todoId, String completeDate) {
+		Todo dbTodo = todoRepository.findByIdAndActiveTrue(todoId);
+		if (dbTodo == null) {
+			throw new EntityException("Todo not found", todoId);
+		}
+
+		User user = userRepository.getOne(userId);
+
+		if (user == null) {
+			throw new EntityException("User not found", userId);
+		}
+
+		if (!dbTodo.getCreatedBy().equals(user)) {
+			throw new GenericException("You can not complete someone's todo", dbTodo);
+		}
+
+		LocalDate completedDate = this.convertStringToLD(completeDate);
+
+		if (dbTodo.getCompletedDate().equals(completedDate)) {
+			// Complete on time
+			dbTodo.setCompleted(true);
+			dbTodo.setStatus(TodoStatus.COMPLETED);
+			dbTodo.setCompletedDate(completedDate);
+			return todoRepository.save(dbTodo);
+		} else if (dbTodo.getCompletedDate().isBefore(completedDate)) {
+			// Overdue
+			dbTodo.setStatus(TodoStatus.OVERDUED);
+			dbTodo.setCompletedDate(completedDate);
+			return todoRepository.save(dbTodo);
+		}
+
+		return dbTodo;
 	}
 }

@@ -2,4 +2,6 @@ enum TodoStatus {
     CREATED
     COMPLETED
     IN_PROGRESS
+    OVERDUED
+    CANCELED
 }

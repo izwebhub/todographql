@@ -1,5 +1,7 @@
 package com.izwebacademy.todographql.contracts.mutations;
 
+import java.time.LocalDate;
+
 import com.izwebacademy.todographql.inputs.TodoInput;
 import com.izwebacademy.todographql.models.Todo;
 
@@ -10,7 +12,7 @@ public interface TodoMutationContract {
 
 	Todo deleteTodo(Long id);
 
-	Todo completeMyTodo(Long todoId);
+	Todo completeMyTodo(Long todoId, String completeDate);
 
-	Todo completeUserTodo(Long userId, Long todoId);
+	Todo completeUserTodo(Long userId, Long todoId, String completeDate);
 }

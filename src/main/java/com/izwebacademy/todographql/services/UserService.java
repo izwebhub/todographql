@@ -129,13 +129,23 @@ public class UserService implements UserMutationContract, UserQueryContract {
 
 	@Override
 	public User activateUser(Long userId) {
-		// TODO Auto-generated method stub
-		return null;
+		User user = userRepository.getOne(userId);
+		if (user == null) {
+			throw new EntityException("User not found", userId);
+		}
+		user.setActive(true);
+		userRepository.save(user);
+		return user;
 	}
 
 	@Override
 	public User blockUser(Long userId) {
-		// TODO Auto-generated method stub
-		return null;
+		User user = userRepository.getOne(userId);
+		if (user == null) {
+			throw new EntityException("User not found", userId);
+		}
+		user.setActive(false);
+		userRepository.save(user);
+		return user;
 	}
 }
