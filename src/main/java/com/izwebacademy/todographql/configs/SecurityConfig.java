@@ -1,38 +1,15 @@
 package com.izwebacademy.todographql.configs;
 
 import org.springframework.context.annotation.Bean;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-@EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled = true)
-public class SecurityConfig extends WebSecurityConfigurerAdapter {
-
-	@Override
-	protected void configure(HttpSecurity http) throws Exception {
-		http
-				.cors().disable()
-				.csrf().disable()
-				
-				.authorizeRequests()
-				
-				.antMatchers("/graphql").permitAll()
-				.antMatchers("/graphiql").permitAll()
-				.antMatchers("/vendor/**").permitAll()
-				
-				.antMatchers("/playground/**").permitAll()
-				
-				.anyRequest().authenticated();
-	}
+@Configuration
+public class SecurityConfig {
 
 	@Bean
 	public BCryptPasswordEncoder passwordEncoder(){
 		return new BCryptPasswordEncoder();
 	}
 	
-	
-
 }

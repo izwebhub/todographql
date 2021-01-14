@@ -22,3 +22,7 @@ type Mutation {
     updateCategory(id: ID!, input: CategoryInput!): Category
     deleteCategory(id: ID!): Category
 }
+
+type Subscription {
+    categories: [Category]
+}
