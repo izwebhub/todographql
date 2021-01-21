@@ -3,9 +3,12 @@ package com.izwebacademy.todographql.configs;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
 
 @Configuration
-public class SecurityConfig {
+public class SecurityConfig implements WebSocketMessageBrokerConfigurer  {
+	
+	
 
 	@Bean
 	public BCryptPasswordEncoder passwordEncoder(){
