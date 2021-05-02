@@ -94,7 +94,7 @@ cd /usr/local
 Download the apache tomcat 9.0.21 version usning wget followed by the mentioned downloaded link
 
 ```
-wget  http://mirrors.estointernet.in/apache/tomcat/tomcat-9/v9.0.21/bin/apache-tomcat-9.0.21.zip
+wget  https://downloads.apache.org/tomcat/tomcat-9/v9.0.45/bin/apache-tomcat-9.0.45.zip
 ```
 
 List the contents to view the zip file of apache tomcat 9.0.21
