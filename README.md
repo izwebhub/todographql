@@ -1,5 +1,5 @@
 
-# Traditional Way Approach -  Ubuntu 21.04
+# Traditional Way Approach -  Ubuntu 21.04 Server
 
 #### Requirements
 
