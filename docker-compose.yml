@@ -1,0 +1,38 @@
+version: '3'
+services:
+  app:
+    restart: always
+    image: todo
+    ports:
+    - "4000:8080"
+    environment:
+     - POSTGRES_PASSWORD=P@s5w0rd
+     - POSTGRES_USER=postgres 
+     - POSTGRES_DB=tododb
+    depends_on:
+    - db
+  db:
+    restart: always
+    image: postgres
+    ports:
+     - "5432:5432"
+    environment:
+     - POSTGRES_PASSWORD=P@s5w0rd
+     - POSTGRES_USER=postgres
+     - POSTGRES_DB=tododb
+    volumes:
+     - pgvolDev:/var/lib/postgresql/data
+  pgAdmin:
+    restart: always
+    image: dpage/pgadmin4
+    ports:
+     - "8006:80"
+    environment:
+     - PGADMIN_DEFAULT_EMAIL=admin
+     - PGADMIN_DEFAULT_PASSWORD=12345
+    volumes:
+     - pgadminDev:/var/lib/pgadmin
+
+volumes:
+    pgvolDev:
+    pgadminDev:
