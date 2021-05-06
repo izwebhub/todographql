@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: app
-          image: todo
+          image: todo:latest
           ports:
             - containerPort: 8080
           env:
