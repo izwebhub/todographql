@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: todo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: todo
+  template:
+    metadata:
+      labels:
+        app: todo
+    spec:
+      containers:
+        - name: app
+          image: todo
+          ports:
+            - containerPort: 8080
+          env:
+            - name: POSTGRES_URL
+              value: jdbc:postgresql://pg:5432/todographql
+            - name: POSTGRES_USERNAME
+              value: postgres
+            - name: POSTGRES_PASSWORD
+              value: p@s5k8s
+          imagePullPolicy: Always
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: todo
+spec:
+  selector:
+    app: todo
+  ports:
+    - port: 8087 # listens for requests on port
+      targetPort: 8080 #  forwards them to port 8080 of the target Pods:
+  type: LoadBalancer # makes the exposed Pods accessible from outside the cluster.
+
+## The default Service type is ClusterIP, which makes the exposed Pods only accessible from within the cluster.
