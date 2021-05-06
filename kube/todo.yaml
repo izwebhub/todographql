@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: app
-          image: todo:latest
+          image: biggo6/todo
           ports:
             - containerPort: 8080
           env:
