@@ -1,75 +1,85 @@
-apiVersion: v1
-kind: PersistentVolume
-metadata:
-  name: todo-db
-  labels:
-    type: local
-    name: todo-db
-spec:
-  storageClassName: manual
-  capacity:
-    storage: 0.5Gi
-  accessModes:
-    - ReadWriteOnce
-  hostPath:
-    path: /data/db-storage/todo-db
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: todo-db
-spec:
-  ports:
-    - port: 5432
-  selector:
-    app: todo-db
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: pg-accounts-claim
-spec:
-  storageClassName: manual
-  accessModes:
-    - ReadWriteOnce
-  selector:
-    matchLabels:
-      name: todo-db
-  resources:
-    requests:
-      storage: 0.5Gi
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: todo-db
+  name: postgres
 spec:
-  replicas: 1
   selector:
-    matchLabels:
-      app: todo-db
+   matchLabels:
+    app: postgres
+  replicas: 1
   template:
     metadata:
       labels:
-        app: todo-db
+        app: postgres
     spec:
       containers:
-        - image: "postgres:9.6.2"
-          name: todo-db
-          env:
-            - name: POSTGRES_PASSWORD
-              value: 'p@5tGr3s'
-            - name: POSTGRES_USER
-              value: 'user'
-            - name: POSTGRES_DB
-              value: 'todo'
-          ports:
-            - containerPort: 5432
-              name: todo-db
+        - name: postgres
+          image: postgres:latest
+          imagePullPolicy: "IfNotPresent"
+          envFrom:
+            - configMapRef:
+                name: postgres-config
           volumeMounts:
-            - name: postgres-storage
-              mountPath: /var/lib/postgresql/data
+            - mountPath: /var/lib/postgresql/data
+              name: postgredb
       volumes:
-        - name: postgres-storage
+        - name: postgredb
           persistentVolumeClaim:
-           claimName: pg-todo-claim
+            claimName: postgres-pv-claim
+---
+    kind: PersistentVolume
+    apiVersion: v1
+    metadata:
+      name: postgres-pv-volume
+      labels:
+        type: local
+        app: postgres
+    spec:
+      storageClassName: manual
+      capacity:
+        storage: 5Gi
+      accessModes:
+        - ReadWriteMany
+      hostPath:
+        path: "/mnt/data"
+---
+    kind: PersistentVolumeClaim
+    apiVersion: v1
+    metadata:
+      name: postgres-pv-claim
+      labels:
+        app: postgres
+    spec:
+      storageClassName: manual
+      accessModes:
+        - ReadWriteMany
+      resources:
+        requests:
+          storage: 5Gi
+    
+---
+    apiVersion: v1
+    kind: ConfigMap
+    metadata:
+      name: postgres-config
+      labels:
+        app: postgres
+    data:
+      POSTGRES_DB: postgresdb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: root
+---
+    apiVersion: v1
+    kind: Service
+    metadata:
+      name: postgres
+      labels:
+        app: postgres
+    spec:
+       ports:
+        - name: postgres
+          port: 5432
+          nodePort: 30432
+       type: NodePort
+       selector:
+        app: postgres

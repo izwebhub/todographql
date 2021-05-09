@@ -12,38 +12,7 @@ spec:
     app: todo
   type: LoadBalancer
 ---
-apiVersion: v1
-kind: PersistentVolume
-metadata:
-  name: files-todo
-  labels:
-    type: local
-    name: files-todo
-spec:
-  storageClassName: manual
-  capacity:
-    storage: 0.5Gi
-  accessModes:
-    - ReadWriteOnce
-  hostPath:
-    path: /data/nfsvolume/todo
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: files-todo-claim
-spec:
-  storageClassName: manual
-  accessModes:
-    - ReadWriteOnce
-  selector:
-    matchLabels:
-      name: files-todo
-  resources:
-    requests:
-      storage: 0.5Gi
----
-apiVersion: apps/v1 # for versions before 1.8.0 use apps/v1beta1
+apiVersion: apps/v1 
 kind: Deployment
 metadata:
   name: todo
@@ -63,19 +32,11 @@ spec:
         imagePullPolicy: Always
         ports:
         - containerPort: 8080
-        volumeMounts:
-          - name: todo-storage
-            mountPath: /data/files
         env:
-        - name: ACTIVE_PROFILE
-          value: 'production'
         - name: DATABASE_URL
-          value: 'jdbc:postgresql://todo-db:5432/tododb'
+          value: 'jdbc:postgresql://postgres:5432/postgresdb'
         - name: DB_USER
-          value: 'user'
+          value: 'postgres'
         - name: DB_PASS
-          value: 'p@5tGr3s'
-      volumes:
-        - name: todo-storage
-          persistentVolumeClaim:
-           claimName: files-todo-claim
+          value: 'root'
+
